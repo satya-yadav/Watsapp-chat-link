@@ -2,32 +2,63 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Start WhatsApp Chat</title>
+  <title>Generate WhatsApp Link</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      max-width: 500px;
+      margin: auto;
+    }
+    input, button {
+      padding: 10px;
+      font-size: 16px;
+      margin-top: 10px;
+      width: 100%;
+    }
+    #output {
+      margin-top: 20px;
+      font-weight: bold;
+      word-break: break-all;
+    }
+  </style>
+</head>
+<body>
+  <h2>Generate WhatsApp Link</h2>
+  <label>Country Code (default +91):</label><br>
+  <input type="text" id="countryCode" value="+91"><br>
+
+  <label>Mobile Number:</label><br>
+  <input type="text" id="mobileNumber" placeholder="Enter mobile number"><br>
+
+  <label>Message (optional):</label><br>
+  <input type="text" id="message" placeholder="Hi"><br>
+
+  <button onclick="generateLink()">Generate WhatsApp Link</button>
+
+  <div id="output"></div>
+
   <script>
-    function startChat() {
-      let countryCode = prompt("Enter country code (default is +91):", "+91");
-      if (!countryCode || !/^\+?\d{1,4}$/.test(countryCode)) {
-        alert("Invalid country code.");
+    function generateLink() {
+      let cc = document.getElementById('countryCode').value.replace(/\D/g, '');
+      let number = document.getElementById('mobileNumber').value.trim();
+      let message = document.getElementById('message').value.trim();
+
+      if (!cc || !number.match(/^\d{6,15}$/)) {
+        alert("Please enter a valid country code and mobile number.");
         return;
       }
 
-      // Remove any '+' to create a valid wa.me URL
-      countryCode = countryCode.replace("+", "");
-
-      let mobileNumber = prompt("Enter mobile number:");
-      if (!mobileNumber || !/^\d{6,15}$/.test(mobileNumber)) {
-        alert("Invalid mobile number. Use only digits (6-15 digits).");
-        return;
+      let baseUrl = `https://wa.me/${cc}${number}`;
+      if (message) {
+        baseUrl += `?text=${encodeURIComponent(message)}`;
       }
 
-      let message = encodeURIComponent("Hi");
-      let finalURL = "https://wa.me/" + countryCode + mobileNumber + "?text=" + message;
-
-      window.location.href = finalURL;
+      document.getElementById('output').innerHTML = `
+        <p>Generated WhatsApp Link:</p>
+        <a href="${baseUrl}" target="_blank">${baseUrl}</a>
+      `;
     }
   </script>
-</head>
-<body onload="startChat()">
-  <h2>Redirecting to WhatsApp...</h2>
 </body>
 </html>

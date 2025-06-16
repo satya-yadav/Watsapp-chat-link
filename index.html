@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,14 +22,11 @@
 <body>
   <h2>Open WhatsApp App</h2>
 
-  <label>Country Code (default is 91):</label>
-  <input type="text" id="countryCode" value="91">
+  <label>Country Code:</label>
+  <input type="text" id="countryCode" placeholder="e.g. 91, 1, 44">
 
   <label>Mobile Number:</label>
   <input type="text" id="mobileNumber" placeholder="Enter mobile number">
-
-  <label>Message (optional):</label>
-  <input type="text" id="message" placeholder="Hi">
 
   <button onclick="startChat()">Open in WhatsApp App</button>
 
@@ -36,7 +34,6 @@
     function startChat() {
       const ccInput = document.getElementById('countryCode').value.trim();
       const numberInput = document.getElementById('mobileNumber').value.trim();
-      const messageInput = document.getElementById('message').value.trim() || "Hi";
 
       const countryCode = ccInput.replace(/\D/g, '');
       const mobileNumber = numberInput.replace(/\D/g, '');
@@ -46,8 +43,9 @@
         return;
       }
 
+      const message = "Hi...";
       const fullNumber = `${countryCode}${mobileNumber}`;
-      const url = `whatsapp://send?phone=${fullNumber}&text=${encodeURIComponent(messageInput)}`;
+      const url = `whatsapp://send?phone=${fullNumber}&text=${encodeURIComponent(message)}`;
 
       window.location.href = url;
     }

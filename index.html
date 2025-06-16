@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Start WhatsApp Chat</title>
+  <title>Open WhatsApp App</title>
   <style>
     body {
       font-family: sans-serif;
@@ -19,10 +19,10 @@
   </style>
 </head>
 <body>
-  <h2>Start WhatsApp Chat</h2>
+  <h2>Open WhatsApp App</h2>
 
   <label>Country Code (default is 91):</label>
-  <input type="text" id="countryCode" value="91" placeholder="e.g. 1 for USA, 44 for UK">
+  <input type="text" id="countryCode" value="91">
 
   <label>Mobile Number:</label>
   <input type="text" id="mobileNumber" placeholder="Enter mobile number">
@@ -30,13 +30,13 @@
   <label>Message (optional):</label>
   <input type="text" id="message" placeholder="Hi">
 
-  <button onclick="startChat()">Open in WhatsApp</button>
+  <button onclick="startChat()">Open in WhatsApp App</button>
 
   <script>
     function startChat() {
       const ccInput = document.getElementById('countryCode').value.trim();
       const numberInput = document.getElementById('mobileNumber').value.trim();
-      const messageInput = document.getElementById('message').value.trim();
+      const messageInput = document.getElementById('message').value.trim() || "Hi";
 
       const countryCode = ccInput.replace(/\D/g, '');
       const mobileNumber = numberInput.replace(/\D/g, '');
@@ -46,12 +46,9 @@
         return;
       }
 
-      let url = `https://wa.me/${countryCode}${mobileNumber}`;
-      if (messageInput) {
-        url += `?text=${encodeURIComponent(messageInput)}`;
-      }
+      const fullNumber = `${countryCode}${mobileNumber}`;
+      const url = `whatsapp://send?phone=${fullNumber}&text=${encodeURIComponent(messageInput)}`;
 
-      // 🔄 Redirect to WhatsApp
       window.location.href = url;
     }
   </script>

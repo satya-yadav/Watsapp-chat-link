@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Generate WhatsApp Link</title>
+  <title>Start WhatsApp Chat</title>
   <style>
     body {
       font-family: sans-serif;
@@ -16,15 +16,10 @@
       margin-top: 10px;
       width: 100%;
     }
-    #output {
-      margin-top: 20px;
-      font-weight: bold;
-      word-break: break-word;
-    }
   </style>
 </head>
 <body>
-  <h2>Generate WhatsApp Link</h2>
+  <h2>Start WhatsApp Chat</h2>
 
   <label>Country Code (default is 91):</label>
   <input type="text" id="countryCode" value="91" placeholder="e.g. 1 for USA, 44 for UK">
@@ -35,22 +30,19 @@
   <label>Message (optional):</label>
   <input type="text" id="message" placeholder="Hi">
 
-  <button onclick="generateLink()">Generate WhatsApp Link</button>
-
-  <div id="output"></div>
+  <button onclick="startChat()">Open in WhatsApp</button>
 
   <script>
-    function generateLink() {
+    function startChat() {
       const ccInput = document.getElementById('countryCode').value.trim();
       const numberInput = document.getElementById('mobileNumber').value.trim();
       const messageInput = document.getElementById('message').value.trim();
 
-      // Clean and validate
       const countryCode = ccInput.replace(/\D/g, '');
       const mobileNumber = numberInput.replace(/\D/g, '');
 
       if (!countryCode || !mobileNumber.match(/^\d{6,15}$/)) {
-        alert("Please enter a valid country code and mobile number (digits only).");
+        alert("Please enter a valid country code and mobile number.");
         return;
       }
 
@@ -59,10 +51,8 @@
         url += `?text=${encodeURIComponent(messageInput)}`;
       }
 
-      document.getElementById('output').innerHTML = `
-        <p>Generated WhatsApp Link:</p>
-        <a href="${url}" target="_blank">${url}</a>
-      `;
+      // 🔄 Redirect to WhatsApp
+      window.location.href = url;
     }
   </script>
 </body>

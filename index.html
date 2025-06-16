@@ -5,14 +5,25 @@
   <title>Start WhatsApp Chat</title>
   <script>
     function startChat() {
-      var number = prompt("Enter WhatsApp number (without +91):", "");
-      if (number && /^\d{10}$/.test(number)) {
-        var fullNumber = "91" + number;
-        var message = encodeURIComponent("Hi");
-        window.location.href = "https://wa.me/" + fullNumber + "?text=" + message;
-      } else {
-        alert("Please enter a valid 10-digit mobile number.");
+      let countryCode = prompt("Enter country code (default is +91):", "+91");
+      if (!countryCode || !/^\+?\d{1,4}$/.test(countryCode)) {
+        alert("Invalid country code.");
+        return;
       }
+
+      // Remove any '+' to create a valid wa.me URL
+      countryCode = countryCode.replace("+", "");
+
+      let mobileNumber = prompt("Enter mobile number:");
+      if (!mobileNumber || !/^\d{6,15}$/.test(mobileNumber)) {
+        alert("Invalid mobile number. Use only digits (6-15 digits).");
+        return;
+      }
+
+      let message = encodeURIComponent("Hi");
+      let finalURL = "https://wa.me/" + countryCode + mobileNumber + "?text=" + message;
+
+      window.location.href = finalURL;
     }
   </script>
 </head>

@@ -54,11 +54,11 @@
     <h2>Open WhatsApp Chat</h2>
 
     <label>Country Code</label>
-    <input type="text" id="countryCode" placeholder="e.g. +91 or 1" onblur="showCountryName()" />
+    <input type="text" id="countryCode" placeholder="e.g. +91 or 1" onblur="cleanAndSyncInputs()" />
     <div id="countryName"></div>
 
     <label>Mobile Number</label>
-    <input type="text" id="mobileNumber" placeholder="Enter mobile number" />
+    <input type="text" id="mobileNumber" placeholder="Enter mobile number" onblur="cleanAndSyncInputs()" />
 
     <label>Custom Message</label>
     <textarea id="message" placeholder="Type your message...">Hi...</textarea>
@@ -94,20 +94,18 @@
       }
     }
 
-    function startChat() {
+    function cleanAndSyncInputs() {
       const countryCodeInput = document.getElementById('countryCode');
       const mobileNumberInput = document.getElementById('mobileNumber');
-      const message = document.getElementById('message').value.trim();
 
       let cc = countryCodeInput.value.trim().replace(/\D/g, '');
       let mobileRaw = mobileNumberInput.value.trim().replace(/\D/g, '');
 
-      // 🧠 If mobile number contains country code, use it and clear countryCode field
+      // Detect country code from mobile if present
       for (const code of Object.keys(countryMap).sort((a, b) => b.length - a.length)) {
         if (mobileRaw.startsWith(code)) {
           cc = code;
           mobileRaw = mobileRaw.substring(code.length);
-          countryCodeInput.value = ""; // Clear country code input to avoid confusion
           break;
         }
       }
@@ -117,21 +115,31 @@
         mobileRaw = mobileRaw.substring(1);
       }
 
-      // Final validation
+      // Update fields
+      countryCodeInput.value = cc;
+      mobileNumberInput.value = mobileRaw;
+      showCountryName();
+    }
+
+    function startChat() {
+      const countryCodeInput = document.getElementById('countryCode');
+      const mobileNumberInput = document.getElementById('mobileNumber');
+      const message = document.getElementById('message').value.trim();
+
+      let cc = countryCodeInput.value.trim().replace(/\D/g, '');
+      let mobileRaw = mobileNumberInput.value.trim().replace(/\D/g, '');
+
       if (!cc || !mobileRaw.match(/^\d{6,15}$/)) {
         alert("Please enter a valid country code and mobile number.");
         return;
       }
-
-      // Clean and display corrected input
-      mobileNumberInput.value = mobileRaw;
 
       const fullNumber = `${cc}${mobileRaw}`;
       const url = `whatsapp://send?phone=${fullNumber}&text=${encodeURIComponent(message || "Hi...")}`;
       window.location.href = url;
     }
 
-    // 🌍 Optional: auto-fill country code based on user's IP
+    // Optional: auto-fill country code based on user's IP
     window.onload = function () {
       fetch("https://ipapi.co/json/")
         .then(response => response.json())

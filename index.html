@@ -95,31 +95,35 @@
     }
 
     function startChat() {
-      let countryCodeInput = document.getElementById('countryCode');
-      let mobileNumberInput = document.getElementById('mobileNumber');
-      let message = document.getElementById('message').value.trim();
+      const countryCodeInput = document.getElementById('countryCode');
+      const mobileNumberInput = document.getElementById('mobileNumber');
+      const message = document.getElementById('message').value.trim();
 
-      // Clean and extract
       let cc = countryCodeInput.value.trim().replace(/\D/g, '');
       let mobileRaw = mobileNumberInput.value.trim().replace(/\D/g, '');
 
-      // Remove leading zero if present
+      // 🧠 If mobile number contains country code, use it and clear countryCode field
+      for (const code of Object.keys(countryMap).sort((a, b) => b.length - a.length)) {
+        if (mobileRaw.startsWith(code)) {
+          cc = code;
+          mobileRaw = mobileRaw.substring(code.length);
+          countryCodeInput.value = ""; // Clear country code input to avoid confusion
+          break;
+        }
+      }
+
+      // Remove leading 0 if present
       if (mobileRaw.startsWith("0")) {
         mobileRaw = mobileRaw.substring(1);
       }
 
-      // Remove country code from mobile number if repeated
-      if (mobileRaw.startsWith(cc)) {
-        mobileRaw = mobileRaw.substring(cc.length);
-      }
-
+      // Final validation
       if (!cc || !mobileRaw.match(/^\d{6,15}$/)) {
         alert("Please enter a valid country code and mobile number.");
         return;
       }
 
-      // Update UI fields
-      countryCodeInput.value = cc;
+      // Clean and display corrected input
       mobileNumberInput.value = mobileRaw;
 
       const fullNumber = `${cc}${mobileRaw}`;
@@ -127,7 +131,7 @@
       window.location.href = url;
     }
 
-    // Optional: auto-fill country code based on IP
+    // 🌍 Optional: auto-fill country code based on user's IP
     window.onload = function () {
       fetch("https://ipapi.co/json/")
         .then(response => response.json())

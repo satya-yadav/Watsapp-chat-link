@@ -99,22 +99,26 @@
       let mobileNumberInput = document.getElementById('mobileNumber');
       let message = document.getElementById('message').value.trim();
 
-      // Clean and standardize inputs
+      // Clean and extract
       let cc = countryCodeInput.value.trim().replace(/\D/g, '');
       let mobileRaw = mobileNumberInput.value.trim().replace(/\D/g, '');
 
-      // If mobile starts with country code, remove it
+      // Remove leading zero if present
+      if (mobileRaw.startsWith("0")) {
+        mobileRaw = mobileRaw.substring(1);
+      }
+
+      // Remove country code from mobile number if repeated
       if (mobileRaw.startsWith(cc)) {
         mobileRaw = mobileRaw.substring(cc.length);
       }
 
-      // Final checks
       if (!cc || !mobileRaw.match(/^\d{6,15}$/)) {
         alert("Please enter a valid country code and mobile number.");
         return;
       }
 
-      // Update inputs (optional visual feedback)
+      // Update UI fields
       countryCodeInput.value = cc;
       mobileNumberInput.value = mobileRaw;
 
@@ -123,7 +127,7 @@
       window.location.href = url;
     }
 
-    // Auto-detect country code on page load
+    // Optional: auto-fill country code based on IP
     window.onload = function () {
       fetch("https://ipapi.co/json/")
         .then(response => response.json())
